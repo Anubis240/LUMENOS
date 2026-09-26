@@ -1,0 +1,15 @@
+screen = Image("lumen-splash.png");
+screen = screen.Scale(Window.GetWidth(), Window.GetHeight());
+screen_sprite = Sprite(screen);
+screen_sprite.SetX(0);
+screen_sprite.SetY(0);
+screen_sprite.SetZ(-100);
+
+fun display_message(text) {
+  message_image = Image.Text(text, 0.78, 0.74, 0.88, 1, "Sans 13");
+  message_sprite = Sprite(message_image);
+  message_sprite.SetX(Window.GetWidth() / 2 - message_image.GetWidth() / 2);
+  message_sprite.SetY(Window.GetHeight() * 0.88);
+  message_sprite.SetZ(100);
+}
+Plymouth.SetMessageFunction(display_message);

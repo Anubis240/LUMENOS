@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Lumen
+Comment=Dark violet native theme for Lumen OS
+
+[X-GNOME-Metatheme]
+GtkTheme=Lumen
+MetacityTheme=Lumen
+IconTheme=Papirus-Dark
+CursorTheme=Adwaita
+ButtonLayout=menu:minimize,maximize,close

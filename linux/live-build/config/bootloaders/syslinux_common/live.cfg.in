@@ -1,0 +1,12 @@
+label live-@FLAVOUR@
+	menu label ^Start Lumen OS
+	menu default
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE@
+
+label live-@FLAVOUR@-failsafe
+	menu label Lumen OS ^compatibility mode
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE_FAILSAFE@

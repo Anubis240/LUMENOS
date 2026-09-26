@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[[ $(id -u) != 0 ]] || { echo 'A normal user login is required.' >&2; exit 1; }
+export LUMEN_SESSION=1
+export XDG_CURRENT_DESKTOP=XFCE
+export PATH="/opt/lumen-node/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+# The real XFCE session supplies a window manager, networking, sound, keyring
+# integration and recovery apps beneath Lumen's full-screen shell.
+trap 'systemctl --user stop lumen.service >/dev/null 2>&1 || true' EXIT
+startxfce4

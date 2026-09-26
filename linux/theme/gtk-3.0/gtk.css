@@ -1,0 +1,60 @@
+@define-color theme_bg_color #080a16;
+@define-color theme_fg_color #f2eef9;
+@define-color theme_base_color #0d1020;
+@define-color theme_text_color #f2eef9;
+@define-color theme_selected_bg_color #7540c8;
+@define-color theme_selected_fg_color #ffffff;
+@define-color insensitive_bg_color #111426;
+@define-color insensitive_fg_color #777086;
+
+* { color: @theme_fg_color; caret-color: #d7baff; -gtk-icon-shadow: none; }
+window, dialog, .background { background-color: @theme_bg_color; color: @theme_fg_color; }
+headerbar, .titlebar {
+  background-image: linear-gradient(to bottom, #171329, #0d0e1c);
+  border-bottom: 1px solid #4d3470;
+  color: #f7f2ff;
+  box-shadow: inset 0 1px rgba(255,255,255,.04);
+  min-height: 38px;
+}
+headerbar:backdrop, .titlebar:backdrop { background-image: none; background-color: #0d0f1b; color: #8f899d; }
+headerbar button, .titlebar button { background: transparent; border-color: transparent; box-shadow: none; }
+button {
+  background-image: linear-gradient(to bottom, #1b1730, #121425);
+  border: 1px solid #3e3453;
+  border-radius: 7px;
+  padding: 6px 11px;
+  box-shadow: inset 0 1px rgba(255,255,255,.035);
+}
+button:hover { background-image: linear-gradient(to bottom, #2a1d44, #17142b); border-color: #8059b3; }
+button:active, button:checked { background-image: linear-gradient(to bottom, #6e39be, #522596); border-color: #aa78ef; }
+button:disabled { color: @insensitive_fg_color; background: @insensitive_bg_color; }
+entry, textview, spinbutton, combobox button {
+  background-color: #090c19;
+  color: @theme_text_color;
+  border: 1px solid #373149;
+  border-radius: 7px;
+  padding: 6px 9px;
+  selection-background-color: #7040bb;
+}
+entry:focus, textview:focus { border-color: #a578f5; box-shadow: 0 0 0 1px rgba(165,120,245,.25); }
+menu, .menu, popover, popover.background { background-color: #111325; border: 1px solid #443657; color: @theme_fg_color; }
+menuitem { padding: 6px 12px; }
+menuitem:hover { background-color: #32204e; }
+menubar, toolbar { background-color: #0d0f1d; border-color: #28223a; }
+notebook > header { background-color: #0b0d1a; border-color: #292440; }
+notebook > header tab { padding: 7px 12px; border-bottom: 2px solid transparent; }
+notebook > header tab:checked { color: #d7baff; border-bottom-color: #a578f5; }
+treeview, list, iconview { background-color: #0c0f1e; color: @theme_fg_color; }
+treeview:selected, row:selected { background-color: #4e287f; color: #ffffff; }
+scrollbar { background-color: #080a13; }
+scrollbar slider { background-color: #454052; border-radius: 8px; min-width: 8px; min-height: 8px; }
+scrollbar slider:hover { background-color: #74529d; }
+separator { background-color: #292440; min-height: 1px; min-width: 1px; }
+tooltip { background-color: #1b1429; color: #ffffff; border: 1px solid #7350a0; border-radius: 5px; }
+progressbar trough { background-color: #141526; border-radius: 6px; }
+progressbar progress { background-image: linear-gradient(to right, #5d2cab, #a578f5); border-radius: 6px; }
+check, radio { background-color: #0a0c18; border: 1px solid #65527a; color: #ffffff; }
+check:checked, radio:checked { background-color: #7c40cd; border-color: #b589ef; }
+.sidebar, placessidebar, placessidebar list { background-color: #090b17; color: #c9c2d5; }
+.sidebar row:selected, placessidebar row:selected { background-color: #352052; color: #ffffff; }
+statusbar { background-color: #090b15; color: #a9a2b7; }

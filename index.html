@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#030510"><title>Lumen OS — AI desktop</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<a class="skip" href="#main">Skip to desktop</a>
+<header class="topbar"><button class="brand" data-view="home"><span class="mini-orb">✧</span> LUMEN OS</button><time id="clock"></time><div class="system"><span class="preview">INTERACTIVE PROTOTYPE</span><span id="connection">Local demo</span><button id="fullscreen" aria-label="Toggle fullscreen" title="Toggle fullscreen"></button></div></header>
+<nav id="dock" aria-label="Desktop launcher"></nav>
+<main id="main" tabindex="-1">
+<section id="desktop" aria-label="Lumen desktop">
+<div class="ambient-grid" aria-hidden="true"></div>
+<svg class="circuit-field" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+  <defs><linearGradient id="circuitGlow" x1="0" x2="1"><stop stop-color="#1378df"/><stop offset=".55" stop-color="#5b42e8"/><stop offset="1" stop-color="#9b57ff"/></linearGradient></defs>
+  <g class="circuit-left">
+    <path d="M0 64h74l18-18h92l28-28h116"/><path d="M0 92h52l28-28h86"/><path d="M0 128h90l32-32h176"/><path d="M0 164h58l24-24h134l22 22h95"/><path d="M0 222h105l24-24h120"/><path d="M0 686h74l30 30h116l26 26h96"/><path d="M0 724h112l24 24h154"/><path d="M0 764h60l34 34h132l26 26h104"/><path d="M0 812h82l22 22h182"/>
+    <circle cx="328" cy="18" r="4"/><circle cx="298" cy="128" r="4"/><circle cx="333" cy="162" r="4"/><circle cx="249" cy="198" r="4"/><circle cx="342" cy="742" r="4"/><circle cx="356" cy="824" r="4"/>
+  </g>
+  <g class="circuit-right">
+    <path d="M1600 78h-72l-22 22h-110l-28 28h-70"/><path d="M1600 124h-48l-26 26h-86"/><path d="M1600 190h-90l-22-22h-118"/><path d="M1600 678h-84l-26 26h-98l-32 32h-84"/><path d="M1600 730h-55l-30 30h-150"/><path d="M1600 794h-100l-24 24h-178"/>
+    <circle cx="1298" cy="128" r="4"/><circle cx="1370" cy="168" r="4"/><circle cx="1276" cy="736" r="4"/><circle cx="1298" cy="818" r="4"/>
+  </g>
+  <g class="circuit-spine"><path d="M78 20v34l-14 14 14 14v34"/><path d="M1522 20v34l14 14-14 14v34"/><path d="M78 784v34l-14 14 14 14v34"/><path d="M1522 784v34l14 14-14 14v34"/></g>
+</svg>
+<div id="orb-stage"><canvas id="orb" aria-label="Animated violet Lumen orb"></canvas><div class="orb-pedestal" aria-hidden="true"></div></div>
+<div class="home-content"><h1>LUMEN OS</h1><p class="tagline">THE FUTURE HAS A SOUL</p><div class="state-label"><span class="status-dot"></span><span id="orb-status" role="status">Ready when you are</span></div><h2>What would you like to do?</h2>
+<form id="command-form" class="command"><label class="sr-only" for="command">Ask Lumen</label><input id="command" autocomplete="off" placeholder="Ask Lumen anything…" maxlength="2000"><button type="button" id="mute" title="Mute voice replies" aria-label="Mute voice replies" aria-pressed="false"></button><button type="button" id="voice" title="Talk to Gemini" aria-label="Talk to Gemini"></button><button type="submit" aria-label="Send command" id="send-command"></button></form>
+<p id="voice-hint" class="demo-caption">Hold the microphone to talk to Gemini · maximum 30 seconds</p><div class="suggestions"><button data-prompt="Show my agents">My agents</button><button data-prompt="Create an automation">Create a routine</button><button id="orb-demo">Preview orb states</button></div><p class="demo-caption">Cloud connections are configured in Settings → AI & Voice</p></div>
+</section>
+<section id="window" class="window" hidden aria-label="Application window"><header class="window-bar"><span id="window-title"></span><div><button id="window-expand" aria-label="Expand window"></button><button id="window-close" aria-label="Close window"></button></div></header><div id="window-content"></div></section>
+</main>
+<dialog id="editor"><form id="editor-form"><div class="dialog-heading"><h2 id="editor-title"></h2><button type="button" id="editor-close" aria-label="Close dialog">×</button></div><p id="editor-description" class="muted"></p><label>Name<input name="name" required maxlength="60" autocomplete="off"></label><label id="instructions-label">Instructions<textarea name="instructions" required maxlength="1000" rows="4"></textarea></label><label id="schedule-label" hidden>Schedule<select name="schedule"><option>Every day at 09:00</option><option>Every Monday at 09:00</option><option>Every hour</option></select></label><div class="dialog-actions"><button type="button" id="editor-cancel">Cancel</button><button class="primary" type="submit">Save</button></div></form></dialog>
+<dialog id="image-viewer" class="image-viewer"><div class="image-viewer-bar"><strong>LUMEN · IMAGE</strong><div><button type="button" id="image-view-download">Download</button><button type="button" id="image-view-close" aria-label="Close full-screen image">×</button></div></div><img id="image-view-content" alt=""><p id="image-view-prompt"></p></dialog>
+<div id="voice-bar" hidden><span class="status-dot"></span><span id="voice-status" role="status"></span><button id="voice-stop">Stop / cancel</button></div>
+<div id="toast" role="status" hidden></div>
+<div id="desktop-status" class="desktop-status">Workspace ready</div>
+<script src="orb.js"></script><script src="connection.js"></script><script src="voice.js"></script><script src="runtime-ui.js"></script><script src="offline-ui.js"></script><script src="permissions-ui.js"></script><script src="integrations-ui.js"></script><script src="app.js"></script>
+</body></html>

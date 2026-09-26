@@ -1,0 +1,16 @@
+{
+  "mcp": {
+    "graft": {
+      "type": "local",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\leion\\Documents\\Codex\\2026-09-06\\i-x20\\work\\vendor\\graft-src\\dist\\cli.js",
+        "mcp"
+      ],
+      "environment": {
+        "DO_NOT_TRACK": "1"
+      },
+      "enabled": true
+    }
+  }
+}

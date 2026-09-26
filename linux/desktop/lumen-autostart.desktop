@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Lumen shell
+Exec=/usr/local/bin/lumen-session-autostart
+TryExec=/usr/local/bin/lumen-session-autostart
+OnlyShowIn=XFCE;
+X-GNOME-Autostart-enabled=true
+Terminal=false

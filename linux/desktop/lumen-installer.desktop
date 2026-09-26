@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Install Lumen OS
+GenericName=System Installer
+Comment=Install Lumen OS onto this computer
+Exec=/usr/local/bin/lumen-installer
+TryExec=/usr/local/bin/lumen-installer
+Icon=lumen-installer
+Terminal=false
+Categories=System;Settings;
+Keywords=install;installer;disk;system;
+StartupNotify=true

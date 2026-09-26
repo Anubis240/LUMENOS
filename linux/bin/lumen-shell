@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[[ $(id -u) != 0 ]] || { echo 'Open Lumen as a normal desktop user, not root.' >&2; exit 1; }
+export PATH="/opt/lumen-node/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+fail() { printf '%s\n' "$1" >&2; command -v zenity >/dev/null && zenity --error --title='Lumen OS' --text="$1" || true; exit 1; }
+[[ -n ${DISPLAY:-}${WAYLAND_DISPLAY:-} ]] || fail 'Open Lumen inside a graphical desktop session.'
+for tool in chromium systemctl curl secret-tool; do command -v "$tool" >/dev/null || fail "Missing dependency: $tool. See LINUX.md."; done
+systemctl --user show-environment >/dev/null 2>&1 || fail 'The desktop user systemd session is unavailable. Log out and back in; do not run this through sudo.'
+vars=()
+for name in DISPLAY WAYLAND_DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP DBUS_SESSION_BUS_ADDRESS; do [[ -z ${!name:-} ]] || vars+=("$name"); done
+if ((${#vars[@]})); then
+  systemctl --user import-environment "${vars[@]}"
+  command -v dbus-update-activation-environment >/dev/null && dbus-update-activation-environment --systemd "${vars[@]}" || true
+fi
+systemctl --user start lumen.service || fail 'The Lumen service could not start. Run: journalctl --user -u lumen.service -n 50'
+ready=0
+for ((attempt=0; attempt<60; attempt++)); do
+  if curl --noproxy '*' --fail --silent --max-time 1 http://127.0.0.1:4173/api/health | grep -q '"service":"lumen-os"'; then ready=1; break; fi
+  sleep 0.25
+done
+[[ $ready == 1 ]] || fail 'Lumen did not respond on port 4173. Run lumen-health and inspect the service log.'
+profile="$HOME/.local/share/lumen-os/browser"
+umask 077
+mkdir -p "$profile"
+# Keep Chromium's sandbox and its microphone permission prompt enabled.
+# F11 / Alt+F4 remain available so the XFCE recovery desktop is always reachable.
+exec chromium --user-data-dir="$profile" --app=http://127.0.0.1:4173/ --class=LumenOS --start-fullscreen --force-dark-mode --no-first-run --no-default-browser-check

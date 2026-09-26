@@ -1,0 +1,23 @@
+QWidget {
+    color: #eeeafa;
+    background-color: #0b0c1f;
+}
+
+QLineEdit, QComboBox, QSpinBox, QListView, QTreeView, QTableView, QTextEdit {
+    background-color: #111329;
+    border: 1px solid #3a3156;
+    border-radius: 5px;
+    selection-background-color: #6f3fc2;
+    selection-color: #ffffff;
+}
+
+QPushButton {
+    background-color: #21143d;
+    border: 1px solid #8053cd;
+    border-radius: 6px;
+    padding: 7px 14px;
+}
+
+QPushButton:hover { background-color: #35205f; }
+QPushButton:pressed { background-color: #512d8d; }
+QPushButton:disabled { color: #716b80; border-color: #342d43; }

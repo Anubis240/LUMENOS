@@ -1,0 +1,20 @@
+[Unit]
+Description=Lumen OS local desktop service
+Documentation=https://www.debian.org/
+After=graphical-session-pre.target
+PartOf=graphical-session.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+ExecStart=@LUMEN_SERVICE@
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+UMask=0077
+NoNewPrivileges=true
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=graphical-session.target

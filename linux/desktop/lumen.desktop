@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Lumen OS
+Comment=AI desktop with an animated orb and cloud connections
+Exec=lumen-shell
+TryExec=lumen-shell
+Icon=applications-science
+Terminal=false
+Categories=Utility;
+StartupWMClass=LumenOS

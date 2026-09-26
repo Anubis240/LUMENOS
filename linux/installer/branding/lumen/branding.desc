@@ -1,0 +1,38 @@
+---
+componentName: lumen
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 960px,680px
+windowPlacement: center
+
+sidebar: widget
+navigation: widget
+
+strings:
+    productName: Lumen OS
+    shortProductName: Lumen
+    version: 0.6.0 Preview
+    shortVersion: 0.6.0
+    versionedName: Lumen OS 0.6.0 Preview
+    shortVersionedName: Lumen OS 0.6.0
+    bootloaderEntryName: Lumen OS
+    productUrl: ""
+    supportUrl: ""
+    knownIssuesUrl: ""
+    releaseNotesUrl: ""
+    donateUrl: ""
+
+images:
+    productIcon: "lumen.png"
+    productLogo: "lumen.png"
+    productWelcome: "lumen-welcome.png"
+
+slideshow: "show.qml"
+slideshowAPI: 2
+
+style:
+    SidebarBackground: "#090a1c"
+    SidebarText: "#d8d3e8"
+    SidebarTextCurrent: "#ffffff"
+    SidebarBackgroundCurrent: "#6f3fc2"

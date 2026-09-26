@@ -1,0 +1,50 @@
+#!/bin/sh
+set -eu
+
+show_error() {
+  message=$1
+  if command -v zenity >/dev/null 2>&1; then
+    zenity --error --title='Install Lumen OS' --text="$message" 2>/dev/null || true
+  else
+    printf 'Install Lumen OS: %s\n' "$message" >&2
+  fi
+}
+
+if [ ! -d /run/live/medium ] && [ ! -d /lib/live/mount/medium ]; then
+  show_error 'The installer is available only from the Lumen live environment.'
+  exit 1
+fi
+
+if ! sudo -n true 2>/dev/null; then
+  show_error 'The live installer could not obtain administrative access.'
+  exit 1
+fi
+
+fstab_moved=false
+xhost_added=false
+cleanup() {
+  if [ "$xhost_added" = true ]; then
+    xhost -SI:localuser:root >/dev/null 2>&1 || true
+  fi
+  if [ "$fstab_moved" = true ] && [ -f /etc/fstab.orig.calamares ]; then
+    sudo -n mv /etc/fstab.orig.calamares /etc/fstab || true
+  fi
+}
+trap cleanup EXIT HUP INT TERM
+
+# live-build leaves a temporary fstab that can confuse partition discovery.
+if [ -f /etc/fstab ] && [ ! -e /etc/fstab.orig.calamares ]; then
+  sudo -n mv /etc/fstab /etc/fstab.orig.calamares
+  fstab_moved=true
+fi
+
+xhost +SI:localuser:root >/dev/null
+xhost_added=true
+
+sudo -n env \
+  DISPLAY="${DISPLAY:-:0}" \
+  XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}" \
+  XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}" \
+  DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}" \
+  QT_AUTO_SCREEN_SCALE_FACTOR=1 \
+  /usr/bin/calamares

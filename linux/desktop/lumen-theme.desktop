@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Lumen native theme
+Comment=Apply Lumen styling to the XFCE recovery desktop
+Exec=/usr/local/bin/lumen-theme-apply
+OnlyShowIn=XFCE;
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

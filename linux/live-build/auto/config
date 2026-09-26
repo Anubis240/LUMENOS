@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+lb config noauto \
+  --mode debian \
+  --distribution trixie \
+  --architecture amd64 \
+  --archive-areas 'main contrib non-free-firmware' \
+  --mirror-bootstrap 'https://deb.debian.org/debian' \
+  --mirror-chroot 'https://deb.debian.org/debian' \
+  --mirror-chroot-security 'https://deb.debian.org/debian-security' \
+  --mirror-binary 'https://deb.debian.org/debian' \
+  --mirror-binary-security 'https://deb.debian.org/debian-security' \
+  --binary-image iso-hybrid \
+  --bootloaders 'syslinux grub-efi' \
+  --uefi-secure-boot auto \
+  --debian-installer none \
+  --apt-options '--yes -o Acquire::Retries=8 -o Acquire::ForceIPv4=true -o Acquire::https::Timeout=45' \
+  --apt-recommends true \
+  --security true \
+  --updates true \
+  --firmware-chroot true \
+  --firmware-binary true \
+  --linux-flavours amd64 \
+  --image-name lumen-os-preview \
+  --iso-application 'Lumen OS preview' \
+  --iso-publisher 'Lumen OS project' \
+  --iso-volume LUMEN_OS_PREVIEW \
+  --checksums sha256 \
+  --bootappend-live 'boot=live components hostname=lumen username=lumen quiet splash' \
+  --bootappend-live-failsafe 'boot=live components hostname=lumen username=lumen nomodeset' \
+  "$@"

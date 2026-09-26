@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[[ $(id -u) != 0 ]] || exit 0
+for _ in {1..40}; do
+  xfconf-query -c xsettings -p /Net/ThemeName >/dev/null 2>&1 && break
+  sleep 0.1
+done
+set_string() { local c=$1 p=$2 v=$3; xfconf-query -c "$c" -p "$p" -s "$v" >/dev/null 2>&1 || xfconf-query -c "$c" -p "$p" -n -t string -s "$v" >/dev/null 2>&1 || true; }
+set_int() { local c=$1 p=$2 v=$3; xfconf-query -c "$c" -p "$p" -s "$v" >/dev/null 2>&1 || xfconf-query -c "$c" -p "$p" -n -t int -s "$v" >/dev/null 2>&1 || true; }
+set_string xsettings /Net/ThemeName Lumen
+set_string xsettings /Net/IconThemeName Papirus-Dark
+set_string xsettings /Gtk/FontName 'Noto Sans 10'
+set_string xfwm4 /general/theme Lumen
+set_string xfwm4 /general/title_font 'Noto Sans Semi-Bold 10'
+set_int xfwm4 /general/button_spacing 2
+wallpaper=/usr/share/backgrounds/lumen/lumen-splash.png
+while IFS= read -r property; do
+  [[ $property == */last-image ]] && set_string xfce4-desktop "$property" "$wallpaper"
+  [[ $property == */image-style ]] && set_int xfce4-desktop "$property" 5
+done < <(xfconf-query -c xfce4-desktop -l 2>/dev/null || true)
+command -v gsettings >/dev/null 2>&1 && gsettings set org.gnome.desktop.interface color-scheme prefer-dark >/dev/null 2>&1 || true

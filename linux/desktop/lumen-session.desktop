@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Lumen OS
+Comment=Lumen desktop with XFCE recovery tools
+Exec=/usr/local/bin/lumen-session
+TryExec=/usr/local/bin/lumen-session
+Type=Application
+DesktopNames=XFCE;

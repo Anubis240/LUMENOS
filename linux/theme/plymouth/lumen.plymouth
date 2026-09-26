@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Lumen OS
+Description=Lumen OS violet orb boot screen
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/lumen
+ScriptFile=/usr/share/plymouth/themes/lumen/lumen.script

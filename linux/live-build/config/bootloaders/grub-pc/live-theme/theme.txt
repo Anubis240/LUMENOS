@@ -1,0 +1,35 @@
+desktop-image: "../splash.png"
+title-text: ""
+message-font: "Unifont Regular 16"
+terminal-font: "Unifont Regular 16"
+
++ boot_menu {
+    left = 7%
+    width = 85%
+    top = 50%
+    height = 30%
+    item_color = "#cfc7dc"
+    item_font = "Unifont Regular 16"
+    selected_item_color = "#ffffff"
+    selected_item_font = "Unifont Regular 16"
+    item_height = 20
+    item_padding = 4
+    item_spacing = 7
+    icon_width = 0
+    icon_height = 0
+    item_icon_space = 0
+}
+
++ progress_bar {
+    id = "__timeout__"
+    left = 7%
+    top = 91%
+    width = 70%
+    height = 24
+    font = "Unifont Regular 16"
+    text_color = "#d8d0e8"
+    fg_color = "#a864ff"
+    bg_color = "#24163e"
+    border_color = "#8152c7"
+    text = "Starting Lumen OS in %d seconds"
+}

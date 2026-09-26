@@ -1,0 +1,24 @@
+Lumen OS 0.6.0 release candidate
+Date: 2026-09-27
+
+ISO: Lumen-OS-0.6.0-amd64.iso
+Size: 1,660,944,384 bytes
+SHA-256: 5828fda62a6b74d5910f025232340bb36758967ab9566588174926ee0d36e5d6
+
+Verified:
+- Clean Debian live-build completed successfully.
+- Embedded Lumen 0.6.0 service and boot metadata checked.
+- Calamares 3.3.14 and calamares-settings-debian 13.0.13 are included.
+- Lumen installer wrapper, launcher, branding, artwork and slideshow checked.
+- Fresh isolated BIOS VM booted and opened the graphical installer.
+- Fresh isolated UEFI VM booted and opened the graphical installer.
+- Both VMs exposed only a blank 64 GB virtual disk as the install target.
+- Installer welcome artwork passed visual inspection without cropping.
+
+Pending before hardware certification:
+- Complete a blank-disk installation and reboot acceptance in BIOS and UEFI modes.
+- Test Secure Boot, installation alongside another OS, Wi-Fi, suspend/resume,
+  audio devices, display scaling and representative physical Core i5 systems.
+
+Use the installer in a disposable VM until the full installation and reboot
+acceptance test is complete. Back up any real target system before installation.

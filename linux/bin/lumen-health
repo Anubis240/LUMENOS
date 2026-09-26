@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -u
+export PATH="/opt/lumen-node/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+failures=0
+check() { if "$@" >/dev/null 2>&1; then printf 'OK   %s\n' "$*"; else printf 'FAIL %s\n' "$*"; failures=$((failures+1)); fi; }
+printf 'Lumen Linux health check (no keys or message contents are printed)\n'
+check node -e 'if(Number(process.versions.node.split(".")[0])<22)process.exit(1)'
+for tool in chromium secret-tool systemctl; do check command -v "$tool"; done
+check systemctl --user is-active lumen.service
+check curl --noproxy '*' --fail --silent --max-time 5 http://127.0.0.1:4173/api/health
+check busctl --user --list
+printf '\nCredential readiness: open Settings > AI & Voice. If locked, unlock Login in Passwords and Keys (seahorse).\n'
+printf 'Recovery: F11 exits full screen; Alt+F4 closes Lumen; Ctrl+Alt+T opens an XFCE terminal.\n'
+printf 'Service log: journalctl --user -u lumen.service -n 50 --no-pager\n'
+printf 'Check result: %s failure(s)\n' "$failures"
+((failures==0))

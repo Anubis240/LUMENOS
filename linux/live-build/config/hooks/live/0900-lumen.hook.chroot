@@ -1,0 +1,72 @@
+#!/bin/sh
+set -eu
+# This runs inside live-build's image chroot, never on the host filesystem.
+test -f /opt/lumen-os/serve.cjs
+test -x /opt/lumen-node/bin/node
+chmod 0755 /usr/local/bin/lumen-*
+chmod 0644 /usr/lib/systemd/user/lumen.service
+chmod 0644 /usr/share/xsessions/lumen.desktop /usr/share/applications/lumen.desktop /usr/share/applications/lumen-installer.desktop /etc/xdg/autostart/lumen-shell.desktop
+mkdir -p /etc/skel/.config
+
+# Kiosk session hardening:
+#  * Ship an unlocked, blank-password default keyring so the Secret Service
+#    credential vault works on first boot without a "create keyring" prompt.
+#    live-config chowns the copied /etc/skel tree to the live user afterwards.
+#  * Neutralise the XFCE screen locker (Hidden autostart) and X11 blanking so a
+#    passwordless live session can never lock itself out.
+test -f /etc/skel/.local/share/keyrings/Default_Keyring.keyring
+test -f /etc/skel/.local/share/keyrings/default
+[ "$(cat /etc/skel/.local/share/keyrings/default)" = 'Default_Keyring' ]
+chmod 0700 /etc/skel/.local /etc/skel/.local/share /etc/skel/.local/share/keyrings
+chmod 0600 /etc/skel/.local/share/keyrings/Default_Keyring.keyring /etc/skel/.local/share/keyrings/default
+test -f /etc/skel/.config/autostart/xfce4-screensaver.desktop
+test -f /etc/skel/.config/autostart/lumen-idle-off.desktop
+chmod 0755 /etc/skel/.config/autostart
+chmod 0644 /etc/skel/.config/autostart/xfce4-screensaver.desktop /etc/skel/.config/autostart/lumen-idle-off.desktop
+test -x /usr/bin/xset
+
+# Reuse XFWM's complete decoration asset set and apply Lumen's window colors.
+mkdir -p /usr/share/themes/Lumen/xfwm4
+if [ -d /usr/share/themes/Default/xfwm4 ]; then
+  cp -a /usr/share/themes/Default/xfwm4/. /usr/share/themes/Lumen/xfwm4/
+elif [ -d /usr/share/themes/Default-xhdpi/xfwm4 ]; then
+  cp -a /usr/share/themes/Default-xhdpi/xfwm4/. /usr/share/themes/Lumen/xfwm4/
+else
+  echo 'No XFWM base decoration theme was found.' >&2
+  exit 1
+fi
+install -m 0644 /opt/lumen-os/linux/theme/xfwm4/themerc /usr/share/themes/Lumen/xfwm4/themerc
+
+# The live kernel command line already includes quiet splash.
+plymouth-set-default-theme lumen
+update-initramfs -u -k all
+test -f /usr/share/plymouth/themes/lumen/lumen-splash.png
+test -f /usr/share/themes/Lumen/gtk-3.0/gtk.css
+
+# Keep Debian's maintained Calamares configuration, but present it as Lumen OS.
+# The Lumen wrapper uses the live account's existing passwordless sudo because
+# Debian's pkexec wrapper cannot authenticate the passwordless live session.
+# This image hook never partitions or writes to a disk.
+test -x /usr/bin/calamares-install-debian
+test -x /usr/local/bin/lumen-installer
+test -f /etc/calamares/settings.conf
+test -f /etc/calamares/branding/lumen/branding.desc
+test -f /etc/calamares/branding/lumen/show.qml
+sed -i 's/^branding:.*/branding: lumen/' /etc/calamares/settings.conf
+grep -q '^branding: lumen$' /etc/calamares/settings.conf
+if [ -f /usr/share/applications/calamares-install-debian.desktop ]; then
+  printf '\nNoDisplay=true\n' >> /usr/share/applications/calamares-install-debian.desktop
+fi
+if [ -f /etc/xdg/autostart/calamares-desktop-icon.desktop ]; then
+  printf '\nHidden=true\n' >> /etc/xdg/autostart/calamares-desktop-icon.desktop
+fi
+
+# Debian retains its own OS identification and package sources for updates.
+printf 'Lumen OS preview\nDebian 13 / XFCE / cloud AI shell\n' > /etc/lumen-release
+printf 'Lumen OS preview: F11 leaves full screen. Alt+F4 reveals XFCE recovery tools.\nLive changes are temporary unless persistence is explicitly configured.\n' > /etc/motd
+/opt/lumen-node/bin/node --check /opt/lumen-os/serve.cjs
+test -x /usr/bin/chromium
+test -x /usr/bin/secret-tool
+test -x /usr/bin/seahorse
+test -x /usr/bin/startxfce4
+test -x /usr/local/bin/lumen-theme-apply

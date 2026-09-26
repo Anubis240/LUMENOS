@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Screensaver (disabled by Lumen OS)
+Comment=Lumen OS runs as a passwordless kiosk session; the XFCE screen locker is disabled so the desktop is never locked out.
+Exec=/bin/true
+Hidden=true
+X-GNOME-Autostart-enabled=false
+NoDisplay=true

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[[ $(id -u) != 0 ]] || { echo 'Lumen must run as a normal desktop user.' >&2; exit 1; }
+export PATH="/opt/lumen-node/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+app="$HOME/.local/share/lumen-os/app"
+[[ -f "$app/serve.cjs" ]] || app=/opt/lumen-os
+[[ -f "$app/serve.cjs" ]] || { echo 'Lumen application is not installed.' >&2; exit 1; }
+command -v node >/dev/null || { echo 'Install Node.js 22 or later.' >&2; exit 1; }
+node -e 'if(Number(process.versions.node.split(".")[0])<22)process.exit(1)' || { echo 'Lumen requires Node.js 22 or later.' >&2; exit 1; }
+export LUMEN_DATA_DIR="$HOME/.local/share/lumen-os/state"
+umask 077
+mkdir -p "$LUMEN_DATA_DIR"
+cd "$app"
+exec node serve.cjs

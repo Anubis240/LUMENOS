@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Lumen idle settings
+Comment=Disable X11 screen blanking and DPMS power-down for the Lumen appliance session.
+Exec=sh -c "xset s off; xset s noblank; xset -dpms"
+OnlyShowIn=XFCE;
+X-GNOME-Autostart-enabled=true
+Terminal=false
+NoDisplay=true

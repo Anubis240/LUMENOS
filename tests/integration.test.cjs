@@ -1,0 +1,33 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path');
+const {createServer}=require('../serve.cjs');
+const {ApiError}=require('../backend/providers.cjs');
+test('Workspace, agent job, cancellation, offline routing and locked keyring remain isolated',async t=>{
+  const directory=await fs.mkdtemp(path.join(require('node:os').tmpdir(),'lumen-integration-'));
+  const calls=[];let locked=true,aborted=false;
+  const vault={kind:'Test vault',status:async()=>{if(locked)throw new Error('locked');return{}},get:async()=>({key:'fake-test-credential',model:'test-model'})};
+  const providers={chat:async(p,c,m,signal)=>{calls.push({p,m});if(m.at(-1).content.includes('WAIT-FOR-CANCEL'))return new Promise((resolve,reject)=>signal.addEventListener('abort',()=>{aborted=true;reject(new ApiError('Stopped',499))}));return{text:'Saved task result.',provider:p,usage:{input:4,output:4}}}};
+  const offline={status:async()=>({available:true,models:[{name:'qwen2.5:1.5b'}],catalog:[]}),chat:async(model,m)=>({text:'Offline reply.',model,provider:'offline'}),downloads:()=>[],close(){}};
+  const accounts={status:async()=>({codex:{installed:false,connected:false},claude:{installed:false,connected:false}}),close(){}};
+  const s=createServer({directory,vault,providers,offline,accounts});await new Promise(r=>s.listen(0,'127.0.0.1',r));t.after(()=>new Promise(r=>s.close(r)));
+  const base='http://127.0.0.1:'+s.address().port;
+  const status=await(await fetch(base+'/api/status')).json();assert(status.csrf);assert(status.credentialError);
+  const post=async(route,input={})=>{const r=await fetch(base+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json','x-lumen-csrf':status.csrf},body:JSON.stringify(input)});return{status:r.status,data:await r.json()}};
+  const snapshot=await post('runtime/state');assert.equal(snapshot.status,200);assert.equal(snapshot.data.settings.schedulerEnabled,false);assert(snapshot.data.agents.length);
+  assert.equal((await post('workspace/create',{name:'hello.md',content:'Hello workspace'})).status,200);
+  assert.equal((await post('workspace/read',{path:'hello.md'})).data.content,'Hello workspace');
+  assert.equal((await post('workspace/read',{path:'../credentials.dpapi'})).status,400);
+  assert.equal((await post('workspace/create',{name:'hello.md',content:'Overwrite'})).status,409);
+  assert.equal((await post('chat',{provider:'offline',model:'qwen2.5:1.5b',messages:[{role:'user',content:'hello'}]})).data.text,'Offline reply.');assert.equal(calls.length,0);
+  locked=false;
+  const a=(await post('agent/save',{name:'Integration writer',instructions:'Write a brief plan.',provider:'openai',permissions:['workspace.read','notes.write']})).data;
+  assert(a.id);const job=(await post('job/run',{agentId:a.id,prompt:'Review my notes.'})).data;assert(job.id);
+  let complete;for(let n=0;n<100;n++){complete=(await post('runtime/state')).data.jobs.find(j=>j.id===job.id);if(!['queued','running'].includes(complete.status))break;await new Promise(r=>setTimeout(r,20))}
+  assert.equal(complete.status,'completed');assert.equal(complete.output,'Saved task result.');assert(complete.notePath);assert(calls[0].m.some(m=>m.content.includes('Hello workspace')));
+  const waiting=(await post('job/run',{agentId:a.id,prompt:'WAIT-FOR-CANCEL'})).data;
+  for(let n=0;n<50&&!calls.some(c=>c.m.some(m=>m.content.includes('WAIT-FOR-CANCEL')));n++)await new Promise(r=>setTimeout(r,20));
+  assert.equal((await post('job/stop',{id:waiting.id})).status,200);assert(aborted);
+  assert.equal((await post('platform/status')).data.version,'0.6.0');
+  assert.equal((await fetch(base+'/runtime-private/runtime.json')).status,404);
+  assert.equal((await fetch(base+'/linux/install-user.sh')).status,404);
+});
